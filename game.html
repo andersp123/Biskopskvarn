@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Gulf-äventyret</title>
+
+    <style>
+        body {
+            background:#111;
+            color:#f5f5f5;
+            font-family:Arial, sans-serif;
+            margin:0;
+            padding:0;
+        }
+
+        .scene { display:none; }
+
+        .choice-button {
+            display:block;
+            margin:8px 0;
+            padding:10px 15px;
+            background:#ff7b00;
+            color:#111;
+            border:none;
+            border-radius:6px;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        .choice-button:hover {
+            background:#ffa733;
+        }
+
+        /* INVENTORY */
+        #inventory {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 220px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            border: 2px solid #ffa500;
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 1rem;
+            z-index: 9999;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        #inventory h3 {
+            margin-top: 0;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        #inventory-list li {
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ⭐ INVENTORY-BLOCK -->
+    <div id="inventory">
+        <h3>Inventory</h3>
+        <ul id="inventory-list"></ul>
+    </div>
+
+    <!-- ⭐ LJUDTAGGAR (alla du skickade, korrekt placerade) -->
+    <audio id="introMusic" src="ljud/gulfmatchen.mp3"></audio>
+    <audio id="lovisaHej" src="karaktärer/lovisa/ljud/lovisa_hej.mp3"></audio>
+    <audio id="andersKampanj" src="karaktärer/anders/ljud/anders_kampanj.mp3"></audio>
+    <audio id="tomas_godishyllan" src="karaktärer/tomas/ljud/tomas_godishyllan.mp3"></audio>
+    <audio id="solveig_bestallning" src="karaktärer/solveig/ljud/solveig_bestallning.mp3"></audio>
+    <audio id="solveig_irriterad" src="karaktärer/solveig/ljud/solveig_irriterad.mp3"></audio>
+    <audio id="rasmus_intro" src="karaktärer/rasmus/ljud/tjenajagheter.mp3"></audio>
+    <audio id="julia_intro" src="karaktärer/julia/ljud/villduhaostskinka.mp3"></audio>
+    <audio id="rasmus_tjenajagheter" src="karaktärer/rasmus/ljud/tjenajagheter.mp3"></audio>
+    <audio id="monica_intro" src="karaktärer/monica/ljud/berommerpersonalen.mp3"></audio>
+    <audio id="lovisahemlighet" src="karaktärer/lovisa/ljud/duhittadehit.mp3"></audio>
+    <audio id="detarintesant" src="karaktärer/julia/ljud/detarintesant.mp3"></audio>
+    <audio id="duargurkmajonnas" src="karaktärer/julia/ljud/duargurkmajonnas.mp3"></audio>
+    <audio id="haringenhjarna" src="karaktärer/julia/ljud/haringenhjarna.mp3"></audio>
+    <audio id="30graderihelgen" src="karaktärer/anders/ljud/30graderihelgen.mp3"></audio>
+    <audio id="femtongrader" src="karaktärer/anders/ljud/femtongrader.mp3"></audio>
+    <audio id="varforda" src="karaktärer/anders/ljud/varforda.mp3"></audio>
+    <audio id="vind" src="karaktärer/rasmusp/ljud/vind.mp3"></audio>
+    <audio id="hejduarextrarasmusva" src="karaktärer/rasmusp/ljud/hejduarextrarasmusva.mp3"></audio>
+    <audio id="javalkommen" src="karaktärer/rasmusp/ljud/javalkommen.mp3"></audio>
+    <audio id="jappjaghjalper" src="karaktärer/rasmusp/ljud/jappjaghjalper.mp3"></audio>
+    <audio id="vilkenpumpvillduha" src="karaktärer/rasmusp/ljud/vilkenpumpvillduha.mp3"></audio>
+    <audio id="pump4blirbra" src="karaktärer/rasmusp/ljud/pump4blirbra.mp3"></audio>
+    <audio id="sadardentankarnu" src="karaktärer/rasmusp/ljud/sadardentankarnu.mp3"></audio>
+    <audio id="ehokej" src="karaktärer/rasmusp/ljud/ehokej.mp3"></audio>
+    <audio id="perfekttryck" src="karaktärer/rasmusp/ljud/perfekttryck.mp3"></audio>
+    <audio id="duverkartrivas" src="karaktärer/rasmusp/ljud/duverkartrivas.mp3"></audio>
+    <audio id="jagalskardet" src="karaktärer/rasmusp/ljud/jagalskardet.mp3"></audio>
+    <audio id="kollaingarander" src="karaktärer/rasmusp/ljud/kollaingarander.mp3"></audio>
+    <audio id="dugorettbrajobb" src="karaktärer/rasmusp/ljud/dugorettbrajobb.mp3"></audio>
+    <audio id="tackjagforsoker" src="karaktärer/rasmusp/ljud/tackjagforsoker.mp3"></audio>
+    <audio id="villduhakvitto" src="karaktärer/rasmusp/ljud/villduhakvitto.mp3"></audio>
+    <audio id="nejdetarlugnt" src="karaktärer/rasmusp/ljud/nejdetarlugnt.mp3"></audio>
+    <audio id="haengulfdag" src="karaktärer/rasmusp/ljud/haengulfdag.mp3"></audio>
+    <audio id="fanfar" src="karaktärer/rasmusp/ljud/fanfar.mp3"></audio>
+    <audio id="fyllaluft" src="karaktärer/rasmusp/ljud/fyllaluft.mp3"></audio>
+    <audio id="springer" src="karaktärer/rasmusp/ljud/springer.mp3"></audio>
+    <audio id="snurraslang" src="karaktärer/rasmusp/ljud/snurraslang.mp3"></audio>
+    <audio id="tvattaruta" src="karaktärer/rasmusp/ljud/tvattaruta.mp3"></audio>
+    <audio id="hans_tack" src="karaktärer/hans/ljud/tack.mp3"></audio>
+    <!-- ⭐ STARTSCEN -->
+    <div id="scene-start" class="scene">
+        <div class="start-layout">
+            <img src="bilder/titelbild.jpeg" class="scene-image" alt="Titelbild">
+            <div class="start-content">
+                <h1>Gulf-äventyret</h1>
+                <p>Du kliver in på Gulf. Något känns… större än bara kaffe och korv.</p>
+                <button class="choice-button" onclick="showScene('scene-entren')">Starta äventyret</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ ENTRÉN -->
+    <div id="scene-entren" class="scene">
+        <div class="entrance-layout">
+            <img src="bilder/lovisa_valkommen.jpeg" class="scene-image" alt="Lovisa välkomnar">
+            <div class="entrance-content scene-content">
+                <p>Lovisa står vid dörren, stressad men vänlig.</p>
+                <p>"Oj! Hej! Det är lite kaos idag, men välkommen!"</p>
+
+                <button class="choice-button" onclick="goKorvgrill();">Gå till korvgrillen</button>
+                <button class="choice-button" onclick="goKaffe();">Gå till kaffehörnan</button>
+                <button class="choice-button" onclick="goGodis();">Gå till godishyllorna</button>
+                <button class="choice-button" onclick="goDryck();">Gå till dryckeshyllan</button>
+                <button class="choice-button" onclick="goDeniceolja();">Gå till oljehyllan</button>
+                <button class="choice-button" onclick="addToInventory('Träffat Julia'); goJuliaSmorgas();">Gå till Julia i butiken</button>
+                <button class="choice-button" onclick="goRasmusExtraOutdoor();">Gå till Rasmus Extra utomhus</button>
+                <button class="choice-button" onclick="addToInventory('Träffat Rasmus'); goRasmusPump();">Gå till pumpområdet</button>
+                <button class="choice-button" onclick="goKassan();">Gå till kassan</button>
+                <button class="choice-button" onclick="goAndersGillar()">Vad gillar Anders? -spelet</button>
+                <button class="choice-button" onclick="avsluta();">Avsluta spelet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ RASMUS VID PUMPEN -->
+    <div id="scene-rasmus-pump" class="scene">
+        <audio id="rasmus_intro" src="karaktärer/rasmus/ljud/tjenajagheter.mp3"></audio>
+        <div class="pump-layout">
+            <img src="karaktärer/rasmus/Rasmus_vid_pumpen.jpeg" class="scene-image" alt="Rasmus vid pumpen">
+            <div class="pump-content scene-content">
+                <h2>Rasmus</h2>
+                <p>"Tjena! Jag heter Rasmus. Lovisa sa att jag skulle hjälpa till… tror jag."</p>
+
+                <button class="choice-button" onclick="addToInventory('Träffat Julia'); goJuliaSmorgas();">Gå till Julia i butiken</button>
+                <button class="choice-button" onclick="goDryck();">Gå till dryckeshyllan</button>
+                <button class="choice-button" onclick="goKaffe();">Gå till kaffehörnan</button>
+                <button class="choice-button" onclick="goKassan();">Gå till kassan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ RASMUS EXTRA OUTDOOR -->
+    <div id="scene-rasmus-extra-outdoor" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="karaktärer/rasmusp/RasmusP.jpeg" class="scene-image" alt="Rasmus Extra utomhus">
+            </div>
+            <div class="scene-content">
+                <button class="choice-button" onclick="goEntren();">Tillbaka</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ MINI-SPEL: ANDERS GILLAR -->
+    <div id="scene-anders-gillar" class="scene" style="padding:20px; text-align:center;">
+        <h2>Vad gillar Anders?</h2>
+        <p>Dra sakerna till rätt låda!</p>
+
+        <div style="display:flex; justify-content:space-around; margin-top:20px;">
+            <div class="gillar-lada" data-type="gillar"
+                 style="width:40%; min-height:200px; border:3px solid green; padding:10px; border-radius:10px;">
+                <h3>Gillar</h3>
+            </div>
+
+            <div class="gillar-lada" data-type="ogillar"
+                 style="width:40%; min-height:200px; border:3px solid red; padding:10px; border-radius:10px;">
+                <h3>Gillar inte</h3>
+            </div>
+        </div>
+
+        <div style="margin-top:30px; display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+            <div class="sak" draggable="true" data-type="ogillar"
+                 style="background:#ffd9d9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Små portioner
+            </div>
+            <div class="sak" draggable="true" data-type="gillar"
+                 style="background:#d9ffd9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Bacon
+            </div>
+            <div class="sak" draggable="true" data-type="gillar"
+                 style="background:#d9ffd9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Kött
+            </div>
+            <div class="sak" draggable="true" data-type="ogillar"
+                 style="background:#ffd9d9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Vegetariskt
+            </div>
+            <div class="sak" draggable="true" data-type="ogillar"
+                 style="background:#ffd9d9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Okryddat
+            </div>
+            <div class="sak" draggable="true" data-type="gillar"
+                 style="background:#d9ffd9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Fotboll
+            </div>
+            <div class="sak" draggable="true" data-type="gillar"
+                 style="background:#d9ffd9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Formel 1
+            </div>
+            <div class="sak" draggable="true" data-type="ogillar"
+                 style="background:#ffd9d9; padding:10px 15px; border-radius:8px; cursor:grab;">
+                 Veganskt
+            </div>
+        </div>
+
+        <div id="anders-resultat" style="margin-top:20px; font-weight:bold;"></div>
+    </div>
+
+    <!-- ⭐ MONICA BERÖMMER -->
+    <div id="scene-monica-berom" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="karaktärer/monica/Monica.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Monica</h2>
+                <p>"Jag vill bara säga en sak — ni gör ett fantastiskt jobb allihop..."</p>
+
+                <button class="choice-button" onclick="addToInventory('Träffat Rasmus'); goRasmusPump();">Gå ut till pumpområdet</button>
+                <button class="choice-button" onclick="goHansChef();">Gå till Hans</button>
+                <button class="choice-button" onclick="goKassan();">Gå till kassan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ HANS BERÖMMER -->
+    <div id="scene-hans-chef" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="karaktärer/hans/hans.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Hans</h2>
+                <p>"Ni vet… jag har varit med länge här på Gulf Biskopskvarn..."</p>
+
+                <button class="choice-button" onclick="goMonicaBerom();">Gå till Monica</button>
+                <button class="choice-button" onclick="addToInventory('Träffat Julia'); goJuliaSmorgas();">Gå till Julia i butiken</button>
+                <button class="choice-button" onclick="goRasmusPump();">Gå ut till pumpområdet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ JULIA I BUTIKEN -->
+    <div id="scene-julia-smorgas" class="scene">
+        <div class="julia-layout">
+            <img src="karaktärer/julia/Julia.jpeg" class="scene-image">
+            <div class="julia-content scene-content">
+                <h2>Julia</h2>
+                <p>"Hej! Jag heter Julia. Jag gör smörgåsar här på Gulf..."</p>
+
+                <button class="choice-button" onclick="addToInventory('Träffat Julia'); goKassan();">Jag har bråttom!</button>
+                <button class="choice-button" onclick="addToInventory('Träffat Rasmus'); goRasmusPump();">Gå ut till Rasmus vid pumpen</button>
+                <button class="choice-button" onclick="addToInventory('Träffat Julia'); goGurkmajonnas()">Starta gurkmajonnäs-scenen</button>
+                <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ GURKMAJONNÄS -->
+    <div id="scene-gurkmajonnas" class="scene">
+        <div class="scene-gurk-layout">
+            <div class="scene-gurk-text">
+                <h2>Anders berättar ett dåligt skämt</h2>
+                <p>Det är lugnt i butiken...</p>
+                <p><strong>Anders:</strong> “Det ska bli trettio grader i helgen!”</p>
+                <p><strong>Julia:</strong> “Nähä, det är inte sant!”</p>
+                <p><strong>Anders:</strong> “Jo, femton grader på lördag, femton grader på söndag!”</p>
+                <p><strong>Julia:</strong> “Du är en gurkmajonnäs.”</p>
+            </div>
+
+            <div class="scene-gurk-image">
+                <img src="karaktärer/julia/gurkmajo.jpeg">
+                <p class="scene-caption">“Du är en gurkmajonnäs!”</p>
+            </div>
+        </div>
+
+        <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+    </div>
+
+    <!-- ⭐ KORVGRILL -->
+    <div id="scene-korvgrill" class="scene">
+        <div class="korvgrill-layout">
+            <img src="karaktärer/anders/korvgrillen.jpeg" class="scene-image">
+            <div class="korvgrill-content scene-content">
+                <h2>Korvgrillen</h2>
+                <p>Anders står och vänder korvar fast det är en rullgrill.</p>
+
+                <button class="choice-button" onclick="chooseKorv();">Ta en korv</button>
+                <button class="choice-button" onclick="goKaffe();">Gå till kaffehörnan</button>
+                <button class="choice-button" onclick="goJuliaSmorgas();">Gå till Julia i butiken</button>
+                <button class="choice-button" onclick="goKassan();">Gå till kassan</button>
+                <button class="choice-button" onclick="goGodis();">Gå till godishyllorna</button>
+                <button class="choice-button" onclick="goRasmusPump();">Gå till pumpområdet</button>
+                <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ KAFFE -->
+    <div id="scene-kaffe" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/kaffehornan.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Kaffehörnan</h2>
+                <p>Doften av kaffe fyller rummet.</p>
+
+                <button class="choice-button" onclick="chooseKaffe();">Ta en kaffe</button>
+                <button class="choice-button" onclick="goJuliaSmorgas();">Gå till Julia i butiken</button>
+                <button class="choice-button" onclick="chooseBulle();">Ta en bulle</button>
+                <button class="choice-button" onclick="chooseBade();">Ta både kaffe och bulle</button>
+                <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ GODIS -->
+    <div id="scene-godis" class="scene">
+        <div class="godis-layout">
+            <img src="karaktärer/tomas/tomas.jpeg" class="scene-image">
+            <div class="godis-content scene-content">
+                <h2>Godishyllorna</h2>
+                <p>Anders… du försöker ju, och det är fint.</p>
+
+                <button class="choice-button" onclick="fåLovisaSpray();">Ta Lovisa-Spray</button>
+                <button class="choice-button" onclick="goKassan();">Gå till kassan</button>
+                <button class="choice-button" onclick="goKaffe();">Gå till kaffehörnan</button>
+                <button class="choice-button" onclick="goJuliaSmorgas();">Gå till Julia i butiken</button>
+                <button class="choice-button" onclick="goDryck();">Gå till dryckeshyllan</button>
+                <button class="choice-button" onclick="goMonicaBerom();">Gå till Monica</button>
+                <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ DRYCK -->
+    <div id="scene-dryck" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/dryck.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Dryckeshyllan</h2>
+                <p>Burkar, flaskor, energi.</p>
+
+                <button id="secretButton" class="choice-button" style="display:none;" onclick="goHemligt();">
+                    Hemlig knapp
+                </button>
+
+                <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ HEMLIG -->
+    <div id="scene-hemligt" class="scene">
+        <h2>Hemlig scen</h2>
+        <p>Lovisa står i ett hörn av butiken där ingen brukar gå.</p>
+
+        <div class="scene-image">
+            <img src="karaktärer/lovisa/hemligalovisa.jpeg">
+        </div>
+
+        <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+    </div>
+
+    <!-- ⭐ DENICE OLJA -->
+    <div id="scene-denice-olja" class="scene" style="padding:20px;">
+        <h2>Denice vid oljehyllan</h2>
+
+        <img src="karaktärer/denice/deniceolja.jpeg" style="width:200px; float:right; margin-left:20px;">
+
+        <div id="denice-olja-dialog" style="margin-top:10px; border:1px solid #ccc; padding:10px; border-radius:8px;">
+            <p id="denice-olja-text">
+                Du går fram till oljehyllan. En tjej i Gulf-tröja står där och sorterar flaskor.
+            </p>
+        </div>
+
+        <button id="denice-olja-next" onclick="deniceOljaNext()" style="margin-top:15px;">
+            Fortsätt
+        </button>
+    </div>
+
+    <!-- ⭐ KASSAN -->
+    <div id="scene-kassan" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/solveig_kassan.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Kassan</h2>
+                <p>Solveig står bakom kassan och skriver frenetiskt.</p>
+                <button class="choice-button" onclick="goSolveigBestallning();">Fråga om beställningen</button>
+                <button class="choice-button" onclick="goSolveigIrriterad();">Försök hjälpa till</button>
+                <button class="choice-button" onclick="showScene('scene-kaos-superfredag');">Kaos?</button>
+                <button class="choice-button" onclick="goEntren();">Tillbaka till entrén</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Solveig - Beställning -->
+    <div id="scene-solveig-bestallning" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/solveig_kassan.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Solveig</h2>
+                <p>"Jag håller på med beställningen! Stör mig inte!"</p>
+
+                <button class="choice-button" onclick="goGodis();">Backa långsamt</button>
+                <button class="choice-button" onclick="goSolveigIrriterad();">Skratta lite</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Solveig - Irriterad -->
+    <div id="scene-solveig-irriterad" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/solveig_kassan.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Solveig</h2>
+                <p>"Jag sa ju att jag håller på med beställningen! Gå och gör något nyttigt!"</p>
+
+                <button class="choice-button" onclick="goSolveigBestallning();">Be om ursäkt</button>
+                <button class="choice-button" onclick="goKaffe();">Gå därifrån</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Solveig - Tystnad -->
+    <div id="scene-solveig-tystnad" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/solveig_kassan.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Solveig</h2>
+                <p>Solveig ignorerar dig helt. Tangentbordet smattrar.</p>
+
+                <button class="choice-button" onclick="goSolveigBestallning();">Hosta diskret</button>
+                <button class="choice-button" onclick="goGodis();">Gå till hyllorna</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Solveig - Suckar -->
+    <div id="scene-solveig-suckar" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="platser/solveig_kassan.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Solveig</h2>
+                <p>"Du är värre än Tomas ibland."</p>
+
+                <button class="choice-button" onclick="goPump();">Gå till pumpområdet</button>
+                <button class="choice-button" onclick="goKaffe();">Be Solveig om kaffe</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Kaos - Super-Fredag -->
+    <div id="scene-kaos-superfredag" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="bilder/superfredag.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Super-Fredag Kaos</h2>
+
+                <p><strong>Solveig:</strong> "Men HERREGUD, Anders! Jag sa ju att du inte skulle röra något!"</p>
+                <p><strong>Lovisa:</strong> "HAHA! Det här är fantastiskt! Anders, gör det igen!"</p>
+                <p><strong>Denice:</strong> "Jag märker allt du gör. Och just nu… gör du för mycket."</p>
+                <p><strong>Monica:</strong> "Snälla… kan vi ha en enda dag utan dramatik?"</p>
+
+                <button class="choice-button" onclick="showScene('scene-start');">Fly från kaoset</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Monica lugnar -->
+    <div id="scene-monica-lugnt" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="karaktärer/monica/Monica.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Monica</h2>
+                <p>"Okej… alla tar ett steg tillbaka nu."</p>
+                <p>"Solveig, fortsätt med beställningen. Lovisa, lägg ner skylten."</p>
+                <p>"Denice… du gör redan rätt."</p>
+                <p>"Anders försöker faktiskt. Låt honom vara."</p>
+
+                <button class="choice-button" onclick="showScene('scene-start');">Gå tillbaka</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Hans gör rent biltvätten -->
+    <div id="scene-hans-biltvatt" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <img src="karaktärer/hans/hansrent.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Hans gör rent biltvätten!</h2>
+
+                <p>Hans står utanför den stora bil-tvättportalen...</p>
+
+                <button class="choice-button" onclick="showScene('scene-hjalp-hans');">Hjälp Hans</button>
+                <button class="choice-button" onclick="showScene('scene-superfredag-tvatt');">Starta Super-Fredag-programmet</button>
+                <button class="choice-button" onclick="showScene('scene-hans-forklaring');">Fråga Hans varför</button>
+                <button class="choice-button" onclick="showScene('scene-entren');">Lämna honom</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ Hjälp Hans -->
+    <div id="scene-hjalp-hans" class="scene">
+        <div class="scene-content">
+            <h2>Du hjälper Hans att rengöra borstarna</h2>
+            <p>Du tar tag i en av de stora blå borstarna...</p>
+
+            <button class="choice-button" onclick="showScene('scene-hans-biltvatt');">Tillbaka</button>
+        </div>
+    </div>
+
+    <!-- ⭐ Superfredag tvätt -->
+    <div id="scene-superfredag-tvatt" class="scene">
+        <div class="scene-content">
+            <h2>Super-Fredag-tvättprogrammet startar!</h2>
+            <p>Du trycker på knappen...</p>
+
+            <button class="choice-button" onclick="showScene('scene-hans-biltvatt');">Tillbaka</button>
+        </div>
+    </div>
+
+    <!-- ⭐ Hans förklaring -->
+    <div id="scene-hans-forklaring" class="scene">
+        <div class="scene-content">
+            <h2>Hans förklarar varför renlighet är viktigt</h2>
+            <p>Hans står med händerna bakom ryggen...</p>
+
+            <button class="choice-button" onclick="showScene('scene-hans-biltvatt');">Tillbaka</button>
+        </div>
+    </div>
+
+    <!-- ⭐ SLUTSCEN ANDERS -->
+    <div id="scene-slut-anders" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <div class="portrait-box">
+                    <img src="karaktärer/anders/anders.jpeg" class="portrait">
+                    <div class="portrait-name">Anders</div>
+                </div>
+                <img src="karaktärer/anders/vinstscenen.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Anders-slutet</h2>
+                <p>Anders tittar på dig. Kaffet och bullen har påverkat allt.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ SLUTSCEN LOVISA -->
+    <div id="scene-slut-lovisa" class="scene">
+        <div class="scene-columns">
+            <div class="scene-visual">
+                <div class="portrait-box">
+                    <img src="karaktärer/lovisa/lovisa.jpeg" class="portrait">
+                    <div class="portrait-name">Lovisa</div>
+                </div>
+                <img src="karaktärer/anders/vinstscenen.jpeg" class="scene-image">
+            </div>
+            <div class="scene-content">
+                <h2>Lovisa-slutet</h2>
+                <p>Lovisa ler. Stressen är borta. Du gjorde något bra.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ⭐ ACHIEVEMENTS -->
+    <div id="scene-achievements" class="scene">
+        <h2>Achievements</h2>
+        <ul id="achievement-list"></ul>
+        <button class="choice-button" onclick="goEntren();">Tillbaka</button>
+    </div>
+<script>
+/* ========= SCENE ENGINE ========= */
+function hideAllScenes() {
+    document.querySelectorAll(".scene").forEach(scene => {
+        scene.style.display = "none";
+    });
+}
+
+function showScene(id) {
+    hideAllScenes();
+    const scene = document.getElementById(id);
+    if (scene) scene.style.display = "block";
+}
+
+/* ========= INVENTORY ========= */
+const inventory = [];
+
+function addToInventory(item) {
+    if (!inventory.includes(item)) {
+        inventory.push(item);
+        updateInventoryUI();
+    }
+}
+
+function updateInventoryUI() {
+    const list = document.getElementById("inventory-list");
+    list.innerHTML = "";
+    inventory.forEach(item => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        list.appendChild(li);
+    });
+}
+
+/* ========= ACHIEVEMENTS ========= */
+let achievements = JSON.parse(localStorage.getItem("gulfAchievements") || "[]");
+if (!Array.isArray(achievements)) {
+    achievements = [];
+    localStorage.setItem("gulfAchievements", JSON.stringify([]));
+}
+
+function unlockAchievement(name) {
+    if (!achievements.includes(name)) {
+        achievements.push(name);
+        localStorage.setItem("gulfAchievements", JSON.stringify(achievements));
+    }
+}
+
+/* ========= STATE ========= */
+let harKaffe = false;
+let harBulle = false;
+let togKorv = false;
+let harLovisaSpray = false;
+
+/* ========= DIALOGSYSTEM ========= */
+let dialogueIndex = 0;
+let dialogueLines = [];
+let dialogueActive = false;
+
+function startDialogue(lines) {
+    dialogueLines = lines;
+    dialogueIndex = 0;
+    dialogueActive = true;
+
+    const activeScene = Array.from(document.querySelectorAll(".scene"))
+        .find(scene => getComputedStyle(scene).display !== "none");
+    if (activeScene && activeScene.querySelector(".scene-image, .portrait")) {
+        activeScene.classList.add("dialogue-scene");
+        document.body.classList.add("dialogue-open");
+    }
+
+    const box = document.getElementById("dialogueBox");
+    box.style.display = "block";
+    box.style.opacity = 1;
+
+    showDialogueLine();
+}
+
+function showDialogueLine() {
+    if (!dialogueActive) {
+        document.getElementById("dialogueBox").style.display = "none";
+        document.body.classList.remove("dialogue-open");
+        document.querySelectorAll(".dialogue-scene").forEach(scene => {
+            scene.classList.remove("dialogue-scene");
+        });
+        return;
+    }
+
+    const line = dialogueLines[dialogueIndex];
+
+    document.getElementById("speakerName").textContent = line.speaker;
+    document.getElementById("dialogueText").textContent = line.text;
+
+    if (line.sound) {
+        const audio = document.getElementById(line.sound);
+        audio.currentTime = 0;
+        audio.play();
+
+        audio.onended = () => {
+            dialogueIndex++;
+            if (dialogueIndex >= dialogueLines.length) dialogueActive = false;
+            showDialogueLine();
+        };
+        return;
+    }
+
+    dialogueIndex++;
+    if (dialogueIndex >= dialogueLines.length) dialogueActive = false;
+    showDialogueLine();
+}
+
+document.getElementById("dialogueBox")?.addEventListener("click", showDialogueLine);
+
+/* ========= SCENE FUNCTIONS ========= */
+
+function goEntren() { showScene("scene-entren"); }
+function goKaffe() { showScene("scene-kaffe"); }
+function goGodis() { showScene("scene-godis"); }
+function goDryck() { showScene("scene-dryck"); }
+function goKassan() { showScene("scene-kassan"); }
+function goPump() { showScene("scene-pump"); }
+function goKorvgrill() { showScene("scene-korvgrill"); }
+
+function goJuliaSmorgas() {
+    showScene("scene-julia-smorgas");
+    playJuliaIntro();
+}
+
+function goRasmusPump() {
+    showScene("scene-rasmus-pump");
+    playTjenaJagHeter();
+}
+
+function goRasmusExtraOutdoor() {
+    hideAllScenes();
+    showScene("scene-rasmus-extra-outdoor");
+    addToInventory("Pratat med Rasmus P – Extra");
+    startDialogue(getRasmusExtraOutdoorScene());
+}
+
+function goMonicaBerom() {
+    addToInventory('Träffat Monica');
+    showScene("scene-monica-berom");
+    playMonicaIntro();
+}
+
+function goHansChef() {
+    addToInventory('Träffat Hans');
+    showScene("scene-hans-chef");
+    playHans_tack();
+}
+
+function goDeniceolja() {
+    hideAllScenes();
+    addToInventory("Fått hjälp av Oljedrottningen Denice!");
+    showScene("scene-denice-olja");
+    deniceOljaStep = 0;
+    document.getElementById("denice-olja-text").textContent =
+        "Du går fram till oljehyllan. En tjej i Gulf-tröja står där och sorterar flaskor.";
+}
+
+function deniceOljaNext() {
+    const textEl = document.getElementById("denice-olja-text");
+    if (!textEl) return;
+
+    const lines = [
+        "Denice: Åh hejhej! Letar du olja? Jag hjälper dig!",
+        "Kund: Ja... jag vet inte riktigt vilken jag ska ha.",
+        "Denice: Vet du, när jag började här kunde jag ingenting om oljor.",
+        "Denice: Jag trodde typ att alla oljor var samma.",
+        "Denice: Nu är jag BÄST på oljor!",
+        "Denice: Fråga mig vad som helst!",
+        "Kund: Ehm... vilken är bra för en gammal Volvo?",
+        "Denice: Den här! Den är som en spa-behandling för motorn!",
+        "Kund: Perfekt, tack!",
+        "Denice: Det är lugnt! Jag är ju oljedrottningen här."
+    ];
+
+    if (deniceOljaStep < lines.length) {
+        textEl.textContent = lines[deniceOljaStep];
+        deniceOljaStep++;
+    } else {
+        showScene("scene-entren");
+    }
+}
+
+/* ========= KAOS ========= */
+function goAndersLugna() { showScene("scene-monica-lugnt"); }
+function goAndersKaos() { showScene("scene-kaos-superfredag"); }
+
+/* ========= SLUT ========= */
+function avsluta() {
+    if (harKaffe && harBulle) {
+        unlockAchievement("Anders‑slutet");
+        showScene('scene-slut-anders');
+    } else {
+        unlockAchievement("Lovisa‑slutet");
+        showScene('scene-slut-lovisa');
+    }
+}
+/* ========= LJUDFUNKTIONER ========= */
+
+function playJuliaIntro() {
+    if (window.juliaIntroPlayed) return;
+    window.juliaIntroPlayed = true;
+
+    const audio = document.getElementById("julia_intro");
+    if (audio) {
+        audio.currentTime = 0;
+        audio.volume = 1.0;
+        audio.play().catch(() => {});
+    }
+}
+
+function playMonicaIntro() {
+    const audio = document.getElementById("monica_intro");
+    if (audio) audio.play().catch(()=>{});
+}
+
+function playHans_tack() {
+    const audio = document.getElementById("hans_tack");
+    if (audio) audio.play().catch(()=>{});
+}
+
+function playTjenaJagHeter() {
+    const audio = document.getElementById("rasmus_intro");
+    audio.currentTime = 0;
+    audio.play().catch(()=>{});
+}
+
+function playLovisaHemlighet() {
+    const audio = document.getElementById("lovisahemlighet");
+    audio.currentTime = 0;
+    audio.play().catch(()=>{});
+}
+
+/* ========= GURKMAJONNÄS-LJUD ========= */
+function playDialogueSequence() {
+    const sounds = [
+        { audio: document.getElementById("30graderihelgen"), pause: 400 },
+        { audio: document.getElementById("detarintesant"), pause: 400 },
+        { audio: document.getElementById("femtongrader"), pause: 400 },
+        { audio: document.getElementById("duargurkmajonnas"), pause: 400 },
+        { audio: document.getElementById("varforda"), pause: 400 },
+        { audio: document.getElementById("haringenhjarna"), pause: 400 }
+    ];
+
+    let index = 0;
+
+    function playNext() {
+        if (index >= sounds.length) return;
+
+        const entry = sounds[index];
+        const sound = entry.audio;
+
+        sound.currentTime = 0;
+        sound.play();
+
+        sound.onended = () => {
+            setTimeout(() => {
+                index++;
+                playNext();
+            }, entry.pause);
+        };
+    }
+
+    playNext();
+}
+
+/* ========= RASMUS EXTRA OUTDOOR ========= */
+function getRasmusExtraOutdoorScene() {
+    return [
+        { speaker: "Berättare", text: "Det blåser lite vid pumparna. En bil rullar in.", sound: "vind"  },
+        { speaker: "Rasmus P – Extra", text: "JAAAAAAAAAAA! Välkommen till Gulf!", sound: "javalkommen"  },
+        { speaker: "Kund", text: "Hej… du är Extra‑Rasmus, va?", sound: "hejduarextrarasmusva"  },
+        { speaker: "Rasmus P – Extra", text: "Japp! Jag hjälper till med ALLT!", sound: "jappjaghjalper"  },
+        { speaker: "Berättare", text: "Han springer fram till bilen...", sound: "springer"  },
+        { speaker: "Rasmus P – Extra", text: "Vilken pump vill du ha?", sound: "vilkenpumpvillduha"  },
+        { speaker: "Kund", text: "Pump 4 blir bra.", sound: "pump4blirbra"  },
+        { speaker: "Berättare", text: "Rasmus kopplar slangen...", sound: "snurraslang"  },
+        { speaker: "Rasmus P – Extra", text: "Den tankar nu!", sound: "sadardentankarnu"  },
+        { speaker: "Kund", text: "Eh… okej?", sound: "ehokej"  },
+        { speaker: "Berättare", text: "Han fyller luft...", sound: "fyllaluft"  },
+        { speaker: "Rasmus P – Extra", text: "Perfekt tryck!", sound: "perfekttryck"  },
+        { speaker: "Kund", text: "Du verkar trivas här.", sound: "duverkartrivas"  },
+        { speaker: "Rasmus P – Extra", text: "Jag älskar det!", sound: "jagalskardet"  },
+        { speaker: "Berättare", text: "Han tvättar rutan...", sound: "tvattaruta"  },
+        { speaker: "Rasmus P – Extra", text: "Kolla! Inga ränder!", sound: "kollaingarander"  },
+        { speaker: "Kund", text: "Du gör ett bra jobb.", sound: "dugorettbrajobb"  },
+        { speaker: "Rasmus P – Extra", text: "TACK!", sound: "tackjagforsoker"  },
+        { speaker: "Berättare", text: "Han ställer sig stolt.", sound: "fanfar"  },
+        { speaker: "Rasmus P – Extra", text: "Vill du ha kvitto?", sound: "villduhakvitto"  },
+        { speaker: "Kund", text: "Nej, det är lugnt.", sound: "nejdetarlugnt"  },
+        { speaker: "Rasmus P – Extra", text: "Ha en GULF‑dag!", sound: "haengulfdag"  }
+    ];
+}
+
+/* ========= STARTA SPELET ========= */
+window.addEventListener("load", () => {
+    showScene("scene-start");
+});
+</script>
+
+</body>
+</html>

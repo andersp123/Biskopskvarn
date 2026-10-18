@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Kör!</title>
+    <style>
+        body {
+            background:#002b5c;
+            color:white;
+            font-family:Arial, sans-serif;
+            text-align:center;
+            padding-top:150px;
+        }
+        .start-button {
+            font-size:80px;
+            font-weight:bold;
+            background:#ff8c00;
+            padding:20px 60px;
+            border-radius:20px;
+            cursor:pointer;
+            border:none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <button class="start-button" onclick="startGame()">Kör!</button>
+
+    <!-- ⭐ KORREKT LJUDFIL OCH KORREKT MAPP -->
+    <audio id="introMusic" src="ljud/gulfmatchen.mp3"></audio>
+
+    <script>
+        function startIntroMusic() {
+            const audio = document.getElementById("introMusic");
+            audio.currentTime = 0;
+            audio.volume = 0;
+            audio.play().catch(() => {});
+
+            let fadeIn = setInterval(() => {
+                if (audio.volume < 0.45) audio.volume += 0.03;
+                else clearInterval(fadeIn);
+            }, 50);
+        }
+
+        window.addEventListener("load", startIntroMusic);
+
+        function stopIntroMusic(callback) {
+            const audio = document.getElementById("introMusic");
+            let fadeOut = setInterval(() => {
+                if (audio.volume > 0.01) audio.volume -= 0.03;
+                else {
+                    clearInterval(fadeOut);
+                    audio.pause();
+                    audio.currentTime = 0;
+                    if (callback) callback();
+                }
+            }, 80);
+        }
+
+        function startGame() {
+            stopIntroMusic(() => {
+                window.location.href = "game.html";
+            });
+        }
+    </script>
+
+</body>
+</html>
+
